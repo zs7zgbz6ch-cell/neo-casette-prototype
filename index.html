@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#070a18">
+<title>Neo Casette — Prototype 0.4</title>
+<style>
+:root{--bg:#050713;--panel:#0b1022;--panel2:#11162b;--text:#f6f7ff;--muted:#8f98b3;--cyan:#42eaff;--blue:#5578ff;--violet:#9d5cff;--pink:#ff4bd8;--line:#242b48}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent} button{touch-action:manipulation;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none} body{margin:0;background:radial-gradient(circle at 70% 0,#15133b 0,#070916 30%,#040611 70%);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Helvetica Neue",sans-serif;min-height:100dvh}
+button{font:inherit;color:inherit}.app{max-width:520px;margin:auto;min-height:100dvh;padding:calc(env(safe-area-inset-top) + 18px) 18px calc(env(safe-area-inset-bottom) + 92px)}
+.brand{font-size:11px;letter-spacing:.24em;color:#aeb7d1;margin-bottom:6px}.logo{font-size:28px;font-weight:800;letter-spacing:.08em;background:linear-gradient(90deg,var(--cyan),var(--violet),var(--pink));-webkit-background-clip:text;color:transparent}
+.sub{font-size:12px;color:var(--muted);letter-spacing:.08em}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:28px}.orb{width:38px;height:38px;border:1px solid #293252;border-radius:50%;display:grid;place-items:center;background:#0b1020}
+h1{font-size:32px;margin:0 0 4px}.section{font-size:12px;letter-spacing:.18em;color:#a9b3cf;margin:26px 0 12px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.card{border:1px solid var(--line);background:linear-gradient(145deg,#11172c,#080b19);border-radius:22px;overflow:hidden;box-shadow:0 14px 35px #0007;cursor:pointer}
+.art{height:160px;position:relative;background:radial-gradient(circle at 65% 25%,#8d4dff55,transparent 28%),linear-gradient(145deg,#101c3a,#261044 58%,#090c1b)}
+.art:before{content:"";position:absolute;inset:18px;border:1px solid #6feaff55;border-radius:12px;box-shadow:inset 0 0 28px #794fff22}
+.art .mark{position:absolute;left:18px;bottom:18px;font-weight:900;font-size:19px;letter-spacing:.05em}
+.meta{padding:13px}.title{font-weight:750}.tags{margin-top:7px;color:#9ca6c1;font-size:11px}.tag{display:inline-block;padding:3px 7px;border:1px solid #313a5c;border-radius:999px;margin-right:4px}
+.nav{position:fixed;z-index:20;left:50%;bottom:0;transform:translateX(-50%);width:min(520px,100%);padding:10px 18px calc(env(safe-area-inset-bottom) + 10px);background:#070a17e8;backdrop-filter:blur(20px);border-top:1px solid #252b46;display:flex;justify-content:space-around}
+.nav button{background:none;border:0;color:#7f89a7;font-size:11px}.nav .active{color:var(--cyan)}
+.screen{display:none}.screen.active{display:block}.back{border:0;background:#10162a;border-radius:50%;width:38px;height:38px;margin-bottom:18px}
+.hero{height:300px;border-radius:28px;border:1px solid #283151;background:radial-gradient(circle at 55% 30%,#b24eff55,transparent 25%),linear-gradient(150deg,#10254a,#30114e 60%,#090b18);position:relative;overflow:hidden;box-shadow:0 20px 50px #0009}
+.hero:after{content:"NEO CASETTE";position:absolute;bottom:20px;left:22px;font-size:28px;font-weight:900;letter-spacing:.08em;text-shadow:0 0 18px #55eaff}
+.gameTitle{font-size:34px;font-weight:850;margin:22px 0 8px}.chips{display:flex;gap:7px;flex-wrap:wrap}.chip{border:1px solid #303a5d;background:#0c1122;padding:7px 10px;border-radius:999px;font-size:11px}
+.play{width:100%;margin:24px 0 8px;border:0;border-radius:18px;padding:17px;font-weight:850;font-size:17px;background:linear-gradient(90deg,var(--cyan),var(--blue),var(--violet));box-shadow:0 0 28px #6366ff55}
+.row{display:flex;justify-content:space-between;padding:15px 2px;border-bottom:1px solid #1f263f;color:#b8c0d7}.row b{color:white}
+.player{margin:-8px -18px 0}.display{aspect-ratio:4/3;background:#02030a;border-block:1px solid #28304b;display:grid;place-items:center;position:relative;overflow:hidden}
+.crt{width:92%;aspect-ratio:4/3;background:linear-gradient(#06152c,#0e2744);border:1px solid #27385a;position:relative;box-shadow:0 0 45px #2d68ff22}
+.crt:before{content:"NEO CASETTE\A MSX2 OUTPUT";white-space:pre;position:absolute;inset:0;display:grid;place-items:center;text-align:center;font:800 18px/1.8 ui-monospace,monospace;letter-spacing:.12em;color:#b7efff;text-shadow:0 0 14px #45dfff}
+.controls{padding:15px 18px;display:grid;grid-template-columns:repeat(4,1fr);gap:9px}.control{border:1px solid #293253;background:#0c1122;border-radius:15px;padding:12px 5px;font-size:11px}.control span{display:block;font-size:20px;margin-bottom:4px}
+.panel{background:#0a0e1ddd;border:1px solid #27304d;border-radius:24px;padding:17px;margin-top:10px}.disk{width:100%;display:flex;justify-content:space-between;align-items:center;border:1px solid #27304c;background:#10162a;border-radius:16px;padding:14px;margin:9px 0}.disk.selected{border-color:var(--cyan);box-shadow:0 0 18px #36ddff22}.led{width:8px;height:8px;border-radius:50%;background:#29304b}.selected .led{background:var(--cyan);box-shadow:0 0 12px var(--cyan)}
+.keyboard{margin-top:12px;padding:9px;border:1px solid #2b3352;border-radius:18px;background:linear-gradient(#11172b,#090c18);overflow:auto}.kbrow{display:flex;gap:4px;margin-bottom:4px;min-width:470px}.key{height:38px;min-width:34px;flex:1;border:1px solid #343d5f;border-bottom-color:#11162a;border-radius:6px;background:linear-gradient(#242b43,#151a2d);font-size:10px;box-shadow:0 2px 0 #050711}.key:active,.key.on{transform:translateY(1px);border-color:var(--cyan);box-shadow:0 0 10px #42eaff55}.wide{flex:1.6}.space{flex:5}.cyan{color:#67ecff}.pink{color:#ff73dc}.hint{color:#7f89a6;font-size:12px;line-height:1.5;margin-top:12px;text-align:center}
+
+/* 0.3 — Computer Mode / Play Mode */
+.modeBadge{display:inline-flex;align-items:center;gap:7px;margin:8px 18px 10px;padding:7px 10px;border:1px solid #293253;border-radius:999px;color:#9ba6c4;font-size:10px;letter-spacing:.12em}
+.modeBadge:before{content:"";width:6px;height:6px;border-radius:50%;background:var(--cyan);box-shadow:0 0 10px var(--cyan)}
+.displayModes{padding:0 18px 12px;display:flex;gap:7px}
+.displayModes button{flex:1;border:1px solid #293253;background:#0c1122;border-radius:12px;padding:9px 4px;font-size:10px}
+.displayModes button.activeMode{border-color:var(--cyan);color:var(--cyan);box-shadow:0 0 14px #42eaff22}
+.cursorPad{display:grid;grid-template-columns:repeat(3,38px);grid-template-rows:repeat(2,38px);gap:4px;justify-content:flex-end;min-width:122px}
+.cursorPad .key{min-width:38px;height:38px}.cursorPad .up{grid-column:2}.cursorPad .left{grid-column:1;grid-row:2}.cursorPad .down{grid-column:2;grid-row:2}.cursorPad .right{grid-column:3;grid-row:2}
+@media (orientation:landscape){
+ body.playerOpen{overflow:hidden}
+ body.playerOpen .app{max-width:none;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+ #player.active{height:100dvh;display:flex;flex-direction:column}
+ #player .player{margin:0;display:flex;flex-direction:column;height:100dvh}
+ #player .display{flex:1;min-height:0;border:0}
+ #player .crt{height:94%;width:auto;max-width:74vw}
+ #player .controls{position:absolute;z-index:5;left:max(10px,env(safe-area-inset-left));bottom:max(10px,env(safe-area-inset-bottom));width:auto;grid-template-columns:repeat(4,72px);padding:0;background:#070a17d9;backdrop-filter:blur(18px);border:1px solid #293253;border-radius:18px}
+ #player .control{background:transparent;border:0;padding:8px 4px}
+ #player .control span{font-size:16px}
+ #player .panel{position:absolute;z-index:10;right:max(12px,env(safe-area-inset-right));bottom:max(12px,env(safe-area-inset-bottom));width:min(600px,72vw);max-height:78vh;overflow:auto;margin:0;box-shadow:0 20px 60px #000c;backdrop-filter:blur(20px)}
+ #player .modeBadge{position:absolute;z-index:6;right:max(12px,env(safe-area-inset-right));top:max(10px,env(safe-area-inset-top));margin:0;background:#070a17d9}
+ #player .displayModes{display:flex;position:absolute;z-index:7;right:max(14px,env(safe-area-inset-right));top:82px;width:88px;padding:8px;flex-direction:column;background:#070a17df;backdrop-filter:blur(18px);border:1px solid #293253;border-radius:18px}
+ #player .displayModes.uiHidden{display:none}
+ #player .modeBadge{transition:opacity .18s ease}
+ #player .controls{transition:opacity .18s ease,transform .18s ease}
+ #player .playerHeader{transition:opacity .18s ease}
+ #player.ui-off .controls,#player.ui-off .modeBadge,#player.ui-off .displayModes,#player.ui-off .playerHeader{opacity:0;pointer-events:none}
+ #player.ui-off .display{height:100dvh}
+ #player .overlayToggles{display:flex;position:absolute;z-index:12;right:max(14px,env(safe-area-inset-right));top:42px;gap:7px}
+ #player .overlayToggle{width:38px;height:38px;border:1px solid #293253;border-radius:50%;background:#070a17df;backdrop-filter:blur(18px);font-size:13px}
+ #player.ui-off .overlayToggles{left:max(14px,env(safe-area-inset-left));right:auto;top:max(12px,env(safe-area-inset-top))}
+
+ body.playerOpen .nav{display:none}
+}
+
+
+.overlayToggles{display:none}
+.kbMode.activeMode{border-color:var(--cyan);color:var(--cyan);box-shadow:0 0 14px #42eaff22;background:linear-gradient(135deg,#0c1726,#11152a)}
+.quickKeys{display:flex;gap:4px;align-items:flex-end}
+.quickKeys .key{min-width:38px}
+.kbBottom{display:flex;gap:4px;min-width:470px;align-items:flex-end}
+.kbBottomMain{display:grid;grid-template-columns:1.25fr 3fr 1.25fr;gap:4px;flex:1}
+.kbUtility{display:grid;grid-template-columns:repeat(4,38px);grid-template-rows:38px 38px;gap:4px}
+.kbUtility .quickN{grid-column:1}.kbUtility .quickM{grid-column:2}.kbUtility .quickI{grid-column:3}.kbUtility .quickS{grid-column:4}
+.kbUtility .left{grid-column:1;grid-row:2}.kbUtility .up{grid-column:2;grid-row:2}.kbUtility .down{grid-column:3;grid-row:2}.kbUtility .right{grid-column:4;grid-row:2}
+.kbUtility .key{min-width:38px;height:38px}
+
+</style>
+</head>
+<body>
+<main class="app">
+<section id="library" class="screen active">
+ <div class="top"><div><div class="brand">ICHI X STUDIO</div><div class="logo">NEO CASETTE</div><div class="sub">MSX COMPUTER SYSTEM</div></div><div class="orb">✦</div></div>
+ <h1>Your Library</h1><div class="sub">Prototype 0.4 · demo media only</div>
+ <div class="section">RECENTLY PLAYED</div>
+ <div class="grid">
+  <article class="card" onclick="show('details')"><div class="art"><div class="mark">NIGHT//SHIFT</div></div><div class="meta"><div class="title">Night Shift</div><div class="tags"><span class="tag">MSX2</span><span class="tag">SCC+</span><span class="tag">DISK ×3</span></div></div></article>
+  <article class="card"><div class="art" style="background:radial-gradient(circle at 35% 30%,#20dfff44,transparent 30%),linear-gradient(145deg,#09283c,#181147 65%,#080b18)"><div class="mark">VECTOR//9</div></div><div class="meta"><div class="title">Vector 9</div><div class="tags"><span class="tag">MSX2</span><span class="tag">ROM</span></div></div></article>
+ </div>
+ <div class="section">ALL GAMES</div>
+ <div class="panel">＋ &nbsp; Import ROM / disk images <div class="sub" style="margin-top:5px">Prototype button — native importer comes later.</div></div>
+</section>
+
+<section id="details" class="screen">
+ <button class="back" onclick="show('library')">‹</button>
+ <div class="hero"></div><div class="gameTitle">Night Shift</div>
+ <div class="chips"><div class="chip">MSX2</div><div class="chip">SCC+</div><div class="chip">DISK SET · 3</div></div>
+ <button class="play" onclick="show('player')">▶ &nbsp; PLAY</button>
+ <div class="section">MACHINE</div>
+ <div class="row"><span>System</span><b>MSX2</b></div><div class="row"><span>Sound</span><b>SCC+</b></div><div class="row"><span>Media</span><b>3 disks</b></div>
+</section>
+
+<section id="player" class="screen">
+ <div class="modeBadge" id="orientationMode">COMPUTER MODE</div>
+<div class="overlayToggles">
+ <button class="overlayToggle" id="optionsToggle" onclick="toggleOptions()" aria-label="Toggle display options">▤</button>
+ <button class="overlayToggle" id="uiToggle" onclick="toggleUI()" aria-label="Hide interface">◉</button>
+</div>
+<div class="displayModes">
+<button class="activeMode" onclick="setDisplayMode(this,'fit')">FIT</button>
+<button onclick="setDisplayMode(this,'pixel')">PIXEL</button>
+<button onclick="setDisplayMode(this,'fill')">FILL</button>
+<button onclick="setDisplayMode(this,'full')">FULL</button>
+</div>
+<div class="player">
+  <div class="playerHeader" style="padding:5px 18px 12px;display:flex;justify-content:space-between;align-items:center"><button class="back" style="margin:0" onclick="show('details')">‹</button><div><b>Night Shift</b><div class="sub">MSX2 · SCC+ <span style="color:#4effb1">●</span></div></div><div class="orb">•••</div></div>
+  <div class="display"><div class="crt"></div></div>
+  <div class="controls">
+   <button class="control" onclick="togglePanel('kb')"><span>⌨</span>Keyboard</button>
+   <button class="control" onclick="togglePanel('disks')"><span>▣</span>Disk 01/03</button>
+   <button class="control"><span>🎮</span>Port 1</button>
+   <button class="control"><span>◇</span>State</button>
+  </div>
+ </div>
+ <div id="disks" class="panel" style="display:none"><b>DISK TRAY</b><div class="sub">Drive A · Night Shift</div>
+   <button class="disk selected" onclick="selectDisk(this,1)"><span>Disk 01 <small>BOOT</small></span><i class="led"></i></button>
+   <button class="disk" onclick="selectDisk(this,2)"><span>Disk 02 <small>DATA</small></span><i class="led"></i></button>
+   <button class="disk" onclick="selectDisk(this,3)"><span>Disk 03 <small>DATA</small></span><i class="led"></i></button>
+ </div>
+ <div id="kb" class="panel" style="display:none"><b>MSX KEYBOARD · FIRST PASS</b><div class="sub">Layout will receive an authenticity pass before native implementation.</div>
+  <div style="display:flex;gap:7px;margin-top:12px"><button class="chip kbMode activeMode" onclick="keyboardMode('full',this)">Full</button><button class="chip kbMode" onclick="keyboardMode('game',this)">Game</button><button class="chip kbMode" onclick="keyboardMode('hidden',this)">Hidden</button></div><div class="keyboard" id="keyboardDeck">
+   <div class="kbrow"><button class="key cyan">ESC</button><button class="key cyan">F1</button><button class="key cyan">F2</button><button class="key cyan">F3</button><button class="key cyan">F4</button><button class="key cyan">F5</button><button class="key pink wide">STOP</button><button class="key pink wide">SELECT</button></div>
+   <div class="kbrow"><button class="key">1</button><button class="key">2</button><button class="key">3</button><button class="key">4</button><button class="key">5</button><button class="key">6</button><button class="key">7</button><button class="key">8</button><button class="key">9</button><button class="key">0</button><button class="key wide">BS</button></div>
+   <div class="kbrow"><button class="key wide">TAB</button><button class="key">Q</button><button class="key">W</button><button class="key">E</button><button class="key">R</button><button class="key">T</button><button class="key">Y</button><button class="key">U</button><button class="key">I</button><button class="key">O</button><button class="key">P</button></div>
+   <div class="kbrow"><button class="key wide">CTRL</button><button class="key">A</button><button class="key">S</button><button class="key">D</button><button class="key">F</button><button class="key">G</button><button class="key">H</button><button class="key">J</button><button class="key">K</button><button class="key">L</button><button class="key">↵</button></div>
+   <div class="kbrow"><button class="key wide">SHIFT</button><button class="key">Z</button><button class="key">X</button><button class="key">C</button><button class="key">V</button><button class="key">B</button><button class="key">N</button><button class="key">M</button><button class="key">INS</button><button class="key">DEL</button></div>
+   <div class="kbBottom">
+ <div class="kbBottomMain"><button class="key cyan">GRAPH</button><button class="key">SPACE</button><button class="key pink">CODE</button></div>
+ <div class="kbUtility">
+  <button class="key quickN">N</button><button class="key quickM">M</button><button class="key quickI">I</button><button class="key quickS">S</button>
+  <button class="key left">←</button><button class="key up">↑</button><button class="key down">↓</button><button class="key right">→</button>
+ </div>
+</div>
+  </div><div class="hint">0.4: compact utility cluster, quick game keys and highlighted modes. True MSX matrix behavior comes in the native build.</div>
+ </div>
+</section>
+</main>
+<nav class="nav"><button class="active" onclick="show('library')">▦<br>Library</button><button>▣<br>Systems</button><button>⚙<br>Settings</button></nav>
+<script>
+function show(id){
+ document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));
+ document.getElementById(id).classList.add('active');
+ document.body.classList.toggle('playerOpen',id==='player');
+ window.scrollTo(0,0);
+}
+function togglePanel(id){const t=document.getElementById(id),open=t.style.display==='none';['kb','disks'].forEach(x=>document.getElementById(x).style.display='none');if(open)t.style.display='block'}
+function selectDisk(el,n){document.querySelectorAll('.disk').forEach(x=>x.classList.remove('selected'));el.classList.add('selected');document.querySelectorAll('.control')[1].innerHTML='<span>▣</span>Disk 0'+n+'/03';if(navigator.vibrate)navigator.vibrate(15)}
+document.querySelectorAll('.key').forEach(k=>{const m=['GRAPH','CODE','CTRL','SHIFT'].includes(k.textContent.trim());k.addEventListener('pointerdown',e=>{e.preventDefault();m?k.classList.toggle('on'):k.classList.add('on');if(navigator.vibrate)navigator.vibrate(6)});if(!m)['pointerup','pointercancel','pointerleave'].forEach(ev=>k.addEventListener(ev,()=>k.classList.remove('on')))})
+function keyboardMode(mode,btn){
+ const d=document.getElementById('keyboardDeck');
+ document.querySelectorAll('.kbMode').forEach(b=>b.classList.remove('activeMode'));
+ if(btn)btn.classList.add('activeMode');
+ if(mode==='hidden'){d.style.display='none';return}
+ d.style.display='block';
+ document.querySelectorAll('.kbrow').forEach((r,i)=>r.style.display=(mode==='game'&&i!==0)?'none':'flex');
+ document.querySelector('.kbBottom').style.display='flex';
+}
+
+function updateOrientation(){
+ const b=document.getElementById('orientationMode');
+ if(b)b.textContent=matchMedia('(orientation:landscape)').matches?'PLAY MODE':'COMPUTER MODE';
+}
+function setDisplayMode(btn,mode){
+ document.querySelectorAll('.displayModes button').forEach(b=>b.classList.remove('activeMode'));
+ btn.classList.add('activeMode');
+ const crt=document.querySelector('.crt');
+ crt.style.transform='none';
+ if(mode==='fit'){crt.style.width='92%';crt.style.height='auto'}
+ if(mode==='pixel'){crt.style.width='82%';crt.style.height='auto'}
+ if(mode==='fill'||mode==='full'){crt.style.width='100%';crt.style.height='100%'}
+ if(navigator.vibrate)navigator.vibrate(6);
+}
+addEventListener('resize',updateOrientation);
+updateOrientation();
+
+
+function toggleOptions(){
+ const p=document.querySelector('#player .displayModes');
+ p.classList.toggle('uiHidden');
+ if(navigator.vibrate)navigator.vibrate(5);
+}
+function toggleUI(){
+ const p=document.getElementById('player');
+ p.classList.toggle('ui-off');
+ const b=document.getElementById('uiToggle');
+ b.textContent=p.classList.contains('ui-off')?'◌':'◉';
+ if(navigator.vibrate)navigator.vibrate(5);
+}
+</script>
+</body>
+</html>
